@@ -168,9 +168,6 @@ getch endp
 posCurScreen proc
         push ebp
 	mov  ebp, esp
-
-	push eax;
-	push ebx;
 								;Al no poder accedir M,M utilitzem registres auxiliars
 	mov  eax, 0					;Inicialitzacio del registre eax
 	mov  ebx, 0					;Inicialitzacio del registre ebx
@@ -190,10 +187,6 @@ posCurScreen proc
 	mov  [colScreen], ebx		;El resultat de ebx al guardem a la variable [colScreen]
 								
 	call gotoxy					;Cridar la subrutina gotoxy
-
-
-	pop ebx;
-	pop eax;
 
 	mov esp, ebp
 	pop ebp
@@ -215,7 +208,6 @@ posCurScreen endp
 getMove proc
    push ebp
    mov  ebp, esp
-   push eax;
 
    mov  eax, 0					;Inicialitzacio del registre auxiliar eax
 
@@ -240,12 +232,9 @@ getMove proc
 
    fi:
 	   mov [tecla], al			;Copiar el valor del registre al a [tecla]
-	
-	pop eax;
-
-	mov esp, ebp
-	pop ebp
-	ret
+	   mov esp, ebp
+	   pop ebp
+	   ret
 
 getMove endp
 
@@ -270,12 +259,6 @@ getMove endp
 moveCursor proc
    push ebp
    mov  ebp, esp
-
-   push eax;
-   push ebx;
-
-   mov eax, 0;
-   mov ebx, 0;
 
    call getMove						;Crida subrutina getMove (llegeix tecla)
 
@@ -336,8 +319,6 @@ moveCursor proc
 	   jmp fi						;Saltar a fi
 
    fi:
-   pop ebx;
-   pop eax;
 	   mov esp, ebp
 	   pop ebp
 	   ret
@@ -392,9 +373,6 @@ calcIndex proc
 	push ebp
 	mov  ebp, esp
 
-	push eax;
-	push ebx;
-
 	mov  eax, 0					;Inicialitzacio del registre eax
 	mov  ebx, 0					;Inicialitzacio del registre ebx
 
@@ -410,9 +388,6 @@ calcIndex proc
 	shl  eax, 2					;Multiplicar per 4 la suma
 
 	mov  [indexMat], eax		;El resultat de eax el guardem a la variable [indexMat]
-
-	pop ebx;
-	pop eax;
 
 	mov esp, ebp
 	pop ebp
@@ -443,9 +418,6 @@ openCard proc
 	push ebp
 	mov  ebp, esp
 
-	push eax;
-	push ebx;
-
 	mov eax, 0						;Inicialitzacio del registre eax
 	mov ebx, 0						;Inicialitzacio del registre ebx
 
@@ -466,9 +438,6 @@ openCard proc
 		call printch				;Cridar subrutina printch
 
 	fi: 
-	pop ebx;
-	pop eax;
-
 		mov esp, ebp
 		pop ebp
 		ret
