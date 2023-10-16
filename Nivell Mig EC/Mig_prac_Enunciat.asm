@@ -543,6 +543,7 @@ openPair proc
 	mov  eax, 0
 	mov  ebx, 0
 
+	bucle:
 	mov  [rowScreen], 3			;Primera carta
 	mov  [colScreen], 30
 	call  gotoxy
@@ -562,7 +563,7 @@ openPair proc
 	
 	call posCurScreen
 
-	bucle:
+	
 	call openCard
 
 	cmp  [tecla], 's'
@@ -576,9 +577,9 @@ openPair proc
 	jne   bucle
 
 
-	cmp [Num_card], 2			;Comprovar si és la primera carta o la segona que s'obre
+	cmp [Num_Card], 2			;Comprovar si és la primera carta o la segona que s'obre
 	je fi
-	mov [Num_Card], 2			;Si és la segona carta, sortir del bucle
+	inc [Num_Card]			;Si és la segona carta, sortir del bucle
 	jmp bucle
 
 	fi:
