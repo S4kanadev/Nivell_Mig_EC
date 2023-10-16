@@ -563,21 +563,23 @@ openPair proc
 	call posCurScreen
 
 	bucle:
-		call moveCursorContinuous
+	call openCard
 
-		cmp  [tecla], ' '
-		je   obrirCarta
-		cmp  [tecla], 's'
-		je   fi
+	cmp  [tecla], 's'
+	je   fi
+		
+	
+	mov  eax, [indexMat]
+	mov  ebx, [gameCards+eax]
+	shr  ebx, 2
+	cmp  [Board+ebx], ' '
+	jne   bucle
 
-	obrirCarta:
-		call openCard
-		mov  eax, [indexMat]
-		mov  ebx, [gameCards+eax]
-		shr  ebx, 2
-		cmp  [Board+ebx], ' '
-		jne   bucle
 
+	cmp [Num_card], 2			;Comprovar si és la primera carta o la segona que s'obre
+	je fi
+	mov [Num_Card], 2			;Si és la segona carta, sortir del bucle
+	jmp bucle
 
 	fi:
 	pop ebx
