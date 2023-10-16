@@ -537,20 +537,35 @@ openPair proc
 	push ebp
 	mov  ebp, esp
 
+	mov  ecx, 0
+
 	mov  [rowScreen], 3			;Primera carta
 	mov  [colScreen], 30
+	call  gotoxy
+	mov  eax, 1
+	add  eax, 48
+	mov  [carac], al
 	mov  [Num_Card], 1
+	call printch
 
 	mov  [rowScreen], 3			;Primer jugador
-	mov  [colScreen], 41	
+	mov  [colScreen], 41
+	call gotoxy
+	mov  ebx, 1
+	add  ebx, 48
+	mov  [carac], bl
 	mov  [Player], 1
+	call printch
+	
+	call posCurScreen
 
-	call moveCursorContinuous
+	bucle:
+		call moveCursorContinuous
 
-	cmp  [tecla], ' '
-	je   obrirCarta
-	cmp  [tecla], 's'
-	je   fi
+		cmp  [tecla], ' '
+		je   obrirCarta
+		cmp  [tecla], 's'
+		je   fi
 
 	obrirCarta:
 		call openCard
@@ -558,7 +573,8 @@ openPair proc
 		mov  ebx, [gameCards+eax]
 		shr  ebx, 2
 		cmp  [Board+ebx], ' '
-		jne   
+		jne   bucle
+
 
 	fi:
 	mov esp, ebp
