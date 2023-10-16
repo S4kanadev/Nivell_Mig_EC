@@ -336,8 +336,8 @@ moveCursor proc
 	   jmp fi						;Saltar a fi
 
    fi:
-   pop ebx;
-   pop eax;
+	   pop ebx;
+	   pop eax;
 	   mov esp, ebp
 	   pop ebp
 	   ret
@@ -466,8 +466,8 @@ openCard proc
 		call printch				;Cridar subrutina printch
 
 	fi: 
-	pop ebx;
-	pop eax;
+		pop ebx;
+		pop eax;
 
 		mov esp, ebp
 		pop ebp
@@ -537,10 +537,30 @@ openPair proc
 	push ebp
 	mov  ebp, esp
 
+	mov  [rowScreen], 3			;Primera carta
+	mov  [colScreen], 30
+	mov  [Num_Card], 1
 
+	mov  [rowScreen], 3			;Primer jugador
+	mov  [colScreen], 41	
+	mov  [Player], 1
 
+	call moveCursorContinuous
 
+	cmp  [tecla], ' '
+	je   obrirCarta
+	cmp  [tecla], 's'
+	je   fi
 
+	obrirCarta:
+		call openCard
+		mov  eax, [indexMat]
+		mov  ebx, [gameCards+eax]
+		shr  ebx, 2
+		cmp  [Board+ebx], ' '
+		jne   
+
+	fi:
 	mov esp, ebp
 	pop ebp
 	ret
