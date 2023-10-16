@@ -546,19 +546,18 @@ openPair proc
 	mov  [rowScreen], 3			;Primera carta
 	mov  [colScreen], 30
 	call  gotoxy
-	mov  eax, 1
+	mov  eax, [Num_Card]
 	add  eax, 48
+	inc eax
 	mov  [carac], al
-	mov  [Num_Card], 1
 	call printch
 
 	mov  [rowScreen], 3			;Primer jugador
 	mov  [colScreen], 41
 	call gotoxy
-	mov  ebx, 1
+	mov  ebx, [Player]
 	add  ebx, 48
 	mov  [carac], bl
-	mov  [Player], 1
 	call printch
 	
 	call posCurScreen
