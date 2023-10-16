@@ -537,7 +537,11 @@ openPair proc
 	push ebp
 	mov  ebp, esp
 
-	mov  ecx, 0
+	push eax
+	push ebx
+
+	mov  eax, 0
+	mov  ebx, 0
 
 	mov  [rowScreen], 3			;Primera carta
 	mov  [colScreen], 30
@@ -577,6 +581,8 @@ openPair proc
 
 
 	fi:
+	pop ebx
+	pop eax
 	mov esp, ebp
 	pop ebp
 	ret
