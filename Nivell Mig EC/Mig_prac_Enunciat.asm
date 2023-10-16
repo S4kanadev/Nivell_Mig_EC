@@ -543,22 +543,15 @@ openPair proc
 	mov  eax, 0								;inicialitzar registre eax
 	mov  ebx, 0								;inicialitzar registre eax
 
+	bucle:
 	mov  [rowScreen], 3						;Primera carta
 	mov  [colScreen], 30					;introduir les coordenades
 	call  gotoxy							;pocicionar el cursor en el lloc de la carta
 	mov  eax, [Num_Card]		
 	inc  eax								;carta de 1 a 2 (NumCard 0 o 1)
 	add  eax, 48							;pasar a char perque NumCard es char
-	mov  [carac], al						;printch va sobre carac
-	bucle:
-	mov  [rowScreen], 3			;Primera carta
-	mov  [colScreen], 30
-	call  gotoxy
-	mov  eax, [Num_Card]
-	inc  eax
-	add  eax, 48
-	mov  [carac], al
-	call printch
+	mov  [carac], al						
+	call printch							;printch va sobre carac
 
 	mov  [rowScreen], 3						;Primer jugador
 	mov  [colScreen], 41					;introduir les cartes
@@ -567,23 +560,11 @@ openPair proc
 	add  ebx, 48							;s'ha de pasar a codi ascci
 	mov  [carac], bl						;movem a carac perque es amb el que treballa printch
 	call printch
-	add  ebx, 48
-	mov  [carac], bl
-	call printch 
+	
 	
 	call posCurScreen						;reposicionem el cursor dins la matriu
 
-	bucle:
-		call moveCursorContinuous			;cridem per moure el cursor
 	
-	call openCard
-
-		cmp  [tecla], ' '					;compara la variable tecla amb ' '
-		je   obrirCarta						;si es igual salta a obrirCarta
-		cmp  [tecla], 's'					;compara la variable tecla amb 's'
-		je   fi								;si es igual salta a fi
-
-	obrirCarta:
 		call openCard						;obre la carta
 		mov  eax, [indexMat]
 		mov  ebx, [gameCards+eax]
@@ -601,7 +582,7 @@ openPair proc
 	jne   bucle
 
 
-	cmp [Num_Card], 2			;Comprovar si és la primera carta o la segona que s'obre
+	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre
 	je fi
 	inc [Num_Card]			;Si és la segona carta, sortir del bucle
 	jmp bucle
