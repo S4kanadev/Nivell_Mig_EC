@@ -558,7 +558,7 @@ openPair proc
 	mov  ebx, [Player]
 	add  ebx, 48
 	mov  [carac], bl
-	call printch
+	call printch 
 	
 	call posCurScreen
 
