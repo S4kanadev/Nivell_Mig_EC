@@ -540,38 +540,38 @@ openPair proc
 	push eax
 	push ebx
 
-	mov  eax, 0
-	mov  ebx, 0
+	mov  eax, 0								;inicialitzar registre eax
+	mov  ebx, 0								;inicialitzar registre eax
 
-	mov  [rowScreen], 3			;Primera carta
-	mov  [colScreen], 30
-	call  gotoxy
-	mov  eax, [Num_Card]
-	inc  eax
-	add  eax, 48
-	mov  [carac], al
+	mov  [rowScreen], 3						;Primera carta
+	mov  [colScreen], 30					;introduir les coordenades
+	call  gotoxy							;pocicionar el cursor en el lloc de la carta
+	mov  eax, [Num_Card]		
+	inc  eax								;carta de 1 a 2 (NumCard 0 o 1)
+	add  eax, 48							;pasar a char perque NumCard es char
+	mov  [carac], al						;printch va sobre carac
 	call printch
 
-	mov  [rowScreen], 3			;Primer jugador
-	mov  [colScreen], 41
-	call gotoxy
+	mov  [rowScreen], 3						;Primer jugador
+	mov  [colScreen], 41					;introduir les cartes
+	call gotoxy								;poscicionar les coordenades
 	mov  ebx, [Player]
-	add  ebx, 48
-	mov  [carac], bl
+	add  ebx, 48							;s'ha de pasar a codi ascci
+	mov  [carac], bl						;movem a carac perque es amb el que treballa printch
 	call printch
 	
-	call posCurScreen
+	call posCurScreen						;reposicionem el cursor dins la matriu
 
 	bucle:
-		call moveCursorContinuous
+		call moveCursorContinuous			;cridem per moure el cursor
 
-		cmp  [tecla], ' '
-		je   obrirCarta
-		cmp  [tecla], 's'
-		je   fi
+		cmp  [tecla], ' '					;compara la variable tecla amb ' '
+		je   obrirCarta						;si es igual salta a obrirCarta
+		cmp  [tecla], 's'					;compara la variable tecla amb 's'
+		je   fi								;si es igual salta a fi
 
 	obrirCarta:
-		call openCard
+		call openCard						;obre la carta
 		mov  eax, [indexMat]
 		mov  ebx, [gameCards+eax]
 		shr  ebx, 2
