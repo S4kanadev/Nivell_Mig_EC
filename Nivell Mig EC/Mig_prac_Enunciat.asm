@@ -22,7 +22,7 @@ extern C Player: DWORD, Num_Card: DWORD, HitPair: DWORD
    
 ;;Macros que guardan y recuperan de la pila los registros de proposito general de la arquitectura de 32 bits de Intel    
 Push_all macro
-	
+	 
 	push eax
    	push ebx
     push ecx
