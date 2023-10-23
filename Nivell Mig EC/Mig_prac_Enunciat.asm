@@ -580,7 +580,7 @@ openPair proc
 	shr  ebx, 2
 	cmp  [Board+ebx], ' '
 	jne   bucle
-
+	 
 
 	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre
 	je fi
