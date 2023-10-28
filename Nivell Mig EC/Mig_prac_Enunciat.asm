@@ -539,12 +539,21 @@ openPair proc
 
 	push eax
 	push ebx
+	push ecx
 
 	mov  eax, 0
 	mov  ebx, 0
 
+	mov  [rowScreen], 3			;Mostrar número del jugador que toca
+	mov  [colScreen], 41
+	call gotoxy
+	mov  ebx, [Player]
+	add  ebx, 48
+	mov  [carac], bl
+	call printch 
+
 	bucle:
-	mov  [rowScreen], 3			;Primera carta
+	mov  [rowScreen], 3			;Mostra quina carta s'ha d'obrir
 	mov  [colScreen], 30
 	call  gotoxy
 	mov  eax, [Num_Card]
@@ -552,39 +561,50 @@ openPair proc
 	add  eax, 48
 	mov  [carac], al
 	call printch
-
-	mov  [rowScreen], 3			;Primer jugador
-	mov  [colScreen], 41
-	call gotoxy
-	mov  ebx, [Player]
-	add  ebx, 48
-	mov  [carac], bl
-	call printch 
 	
-	call posCurScreen
+	call posCurScreen			;Colocarse al tauler
 
-	
-	call openCard
+	call moveCursorContinuous
 
 	cmp  [tecla], 's'
 	je   fi
+
+mostrarCarta:					;comprovar carta 
+	call calcIndex				;Cridar subrutina calcIndex (accedir a les components de la matriu)
+
+	mov  eax, [indexMat]		;Carreguem el valor de la variable [indexMat] al registre eax
 		
-	
-	mov  eax, [indexMat]
-	mov  ebx, [gameCards+eax]
-	shr  ebx, 2
-	cmp  [Board+ebx], ' '
-	jne   bucle
+	mov al, [Board+eax]		;Comprovar si posició escollida ja està oberta
+	cmp eax, ' '
+	jne bucle					;Si la posició està oberta, saltar al bucle per escollir una altra casella
+								
+	mov [Board + eax], 'o'		;Sinó, mostrar valor per pantalla i marcar casella com a ocupada
+	mov  ebx, [gameCards+eax]	;Carreguem el valor de la variable [gameCards+eax] al registre ebx
+	add  ebx, 48				;48 = 0 per obtenir el numero al girar la carta
+	mov  [carac], bl			;Guardem el resultat obtingut de 8 bits a la variable [carac]
+
+	call printch				;Cridar subrutina printch
 
 
-	cmp [Num_Card], 2			;Comprovar si és la primera carta o la segona que s'obre
-	je fi
-	inc [Num_Card]			;Si és la segona carta, sortir del bucle
+	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
+	je compararCartes
+	inc [Num_Card]				;Si és la segona carta, sortir del bucle
+	mov cl, [carac]				;Guardar valor primera carta a registre auxiliar per futura comparació amb segona carta
 	jmp bucle
 
-	fi:
+compararCartes:
+	cmp cl, [carac]				;Comparar valor 1 amb valor 2		
+	je fi						;Si són iguals, deixar imprés a la taula i sortir
+	
+
+	mov [Num_Card], 0			;Reiniciar valor carta a obrir com a primera (primera = 0)
+
+
+fi:
+	pop ecx
 	pop ebx
 	pop eax
+
 	mov esp, ebp
 	pop ebp
 	ret
