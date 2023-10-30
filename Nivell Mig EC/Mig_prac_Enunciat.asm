@@ -576,7 +576,7 @@ bucle:
  	cmp  [tecla], 's'
 	je   fi
 
-mostrarCarta:					;comprovar carta 
+
 	call calcIndex				;Cridar subrutina calcIndex (accedir a les components de la matriu)
 
 	mov  eax, [indexMat]		;Carreguem el valor de la variable [indexMat] al registre eax
@@ -594,12 +594,10 @@ mostrarCarta:					;comprovar carta
 
 	call printch				;Cridar subrutina printch
 
-guardarDadesCarta:
-
 	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
 	je compararCartes			;Si és la segona carta, sortir del bucle
 	
-dadesCarta1:
+
 	inc [Num_Card]				;Incrementar valor carta a escollir
 	mov dl, [col]
 	mov [firstCol],	dl			;Guardar valor primera columna
@@ -613,13 +611,12 @@ compararCartes:
 	cmp ebx, [firstVal]			;Comparar valor 1 amb valor 2		
 	je tornarTrue						;Si són iguals, deixar imprés a la taula i sortir
 
-TreureCarta2:
+	call getch
 	mov [Board+eax], ' '		;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
 	mov [carac], ' '
 	call posCurScreen
 	call printch				;Posar en blanc segona casella escollida
-
-Carta1:							;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
+								;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
 	mov ecx, [firstRow]			;Carregar valors primera carta per eliminar
 	mov dl, [firstCol]
 	mov [row], ecx
@@ -636,7 +633,7 @@ Carta1:							;Sinó són iguals, canviar estat de les caselles i reestablir posic
 
 tornarTrue:
 	mov [HitPair], 1
-
+	
 
 fi:
 	pop edx
@@ -668,19 +665,7 @@ bucle:
 
 	cmp [tecla], 's'
 	je fi
-
-	cmp [HitPair], 1
-	je bucle
-
-	cmp [Player], 1
-	je
-	mov [Player], 2
 	jmp bucle
-
-CanviJugador:
-	mov [Player], 1
-	jmp bucle
-
 
 fi:
 	mov esp, ebp
