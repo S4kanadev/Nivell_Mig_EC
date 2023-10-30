@@ -601,7 +601,9 @@ guardarDadesCarta:
 								; secondVal, secondRow, secondCol: Dades relatives a la segona casella de la parella.
 dadesCarta1:
 	inc [Num_Card]				;Incrementar valor carta a escollir
+	mov dl, [col]
 	mov [firstCol],	dl			;Guardar valor primera columna
+	mov ecx, [row]
 	mov [firstRow], ecx			;Guardar valor primera fila
 	mov [firstVal], ebx
 	jmp actualitzarCarta
@@ -614,22 +616,20 @@ compararCartes:
 TreureCarta2:
 	mov [Board+eax], ' '		;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
 	mov [carac], ' '
-	mov [rowScreen], ecx		;Carregar a fila el valor de la segona fila
-	mov [colScreen], edx		;Carregar a columna el valor de la primera fila
 	call posCurScreen
 	call printch				;Posar en blanc segona casella escollida
 
 Carta1:							;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
-	mov ecx, [firstRow]
+	mov ecx, [firstRow]			;Carregar valors primera carta per eliminar
 	mov dl, [firstCol]
-	mov [rowScreen], ecx
-	mov [colScreen], edx
+	mov [row], ecx
+	mov [col], dl
 
-	call calcIndex
+	call calcIndex				;Calcular posició per posar a la matriu que la posició queda lliure
 	mov eax, [indexMat]
 	mov [Board+eax], ' '
 
-	mov [carac], ' '		
+	mov [carac], ' '			;Carregar espai buit per tapar casella
 	call posCurScreen
 	call printch				;Posar en blanc segona casella escollida
 	
