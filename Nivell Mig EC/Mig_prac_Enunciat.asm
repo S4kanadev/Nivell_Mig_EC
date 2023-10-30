@@ -546,6 +546,7 @@ openPair proc
 	mov ebx, 0
 	mov ecx, 0
 	mov edx, 0
+	mov [HitPair], 0
 
 	mov [Num_Card], 0			;Reiniciar valor carta a obrir com a primera (primera = 0)
 
@@ -598,7 +599,6 @@ guardarDadesCarta:
 	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
 	je compararCartes			;Si és la segona carta, sortir del bucle
 	
-								; secondVal, secondRow, secondCol: Dades relatives a la segona casella de la parella.
 dadesCarta1:
 	inc [Num_Card]				;Incrementar valor carta a escollir
 	mov dl, [col]
@@ -611,7 +611,7 @@ dadesCarta1:
 
 compararCartes:
 	cmp ebx, [firstVal]			;Comparar valor 1 amb valor 2		
-	je fi						;Si són iguals, deixar imprés a la taula i sortir
+	je tornarTrue						;Si són iguals, deixar imprés a la taula i sortir
 
 TreureCarta2:
 	mov [Board+eax], ' '		;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
@@ -632,7 +632,10 @@ Carta1:							;Sinó són iguals, canviar estat de les caselles i reestablir posic
 	mov [carac], ' '			;Carregar espai buit per tapar casella
 	call posCurScreen
 	call printch				;Posar en blanc segona casella escollida
-	
+	jmp fi
+
+tornarTrue:
+	mov [HitPair], 1
 
 
 fi:
@@ -660,7 +663,26 @@ openPairsContinuous proc
 	push ebp
 	mov  ebp, esp
 
+bucle:
+	call openPair
 
+	cmp [tecla], 's'
+	je fi
+
+	cmp [HitPair], 1
+	je bucle
+
+	cmp [Player], 1
+	je
+	mov [Player], 2
+	jmp bucle
+
+CanviJugador:
+	mov [Player], 1
+	jmp bucle
+
+
+fi:
 	mov esp, ebp
 	pop ebp
 	ret
