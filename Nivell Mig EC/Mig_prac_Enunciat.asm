@@ -588,19 +588,18 @@ mostrarCarta:					;comprovar carta
 	mov  ebx, [gameCards+eax]	;Carreguem el valor de la variable [gameCards+eax] al registre ebx
 	add  ebx, 48				;48 = 0 per obtenir el numero al girar la carta
 	mov  [carac], bl			;Guardem el resultat obtingut de 8 bits a la variable [carac]
+	mov ecx, [rowScreen]
+	mov edx, [colScreen]
 
 	call printch				;Cridar subrutina printch
 
 guardarDadesCarta:
-				
-	mov ecx, [rowScreen]
-	mov edx, [colScreen]
 
 	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
 	je compararCartes			;Si és la segona carta, sortir del bucle
 	
 								; secondVal, secondRow, secondCol: Dades relatives a la segona casella de la parella.
-primeraCarta:
+dadesCarta1:
 	inc [Num_Card]				;Incrementar valor carta a escollir
 	mov [firstCol],	dl			;Guardar valor primera columna
 	mov [firstRow], ecx			;Guardar valor primera fila
@@ -612,14 +611,28 @@ compararCartes:
 	cmp ebx, [firstVal]			;Comparar valor 1 amb valor 2		
 	je fi						;Si són iguals, deixar imprés a la taula i sortir
 
-Carta2:
+TreureCarta2:
 	mov [Board+eax], ' '		;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
 	mov [carac], ' '
 	mov [rowScreen], ecx		;Carregar a fila el valor de la segona fila
 	mov [colScreen], edx		;Carregar a columna el valor de la primera fila
+	call posCurScreen
 	call printch				;Posar en blanc segona casella escollida
 
-Carta1:
+Carta1:							;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
+	mov ecx, [firstRow]
+	mov dl, [firstCol]
+	mov [rowScreen], ecx
+	mov [colScreen], edx
+
+	call calcIndex
+	mov eax, [indexMat]
+	mov [Board+eax], ' '
+
+	mov [carac], ' '		
+	call posCurScreen
+	call printch				;Posar en blanc segona casella escollida
+	
 
 
 fi:
