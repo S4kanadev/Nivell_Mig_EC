@@ -537,98 +537,101 @@ openPair proc
 	push ebp
 	mov  ebp, esp
 
-	push eax
+	push eax						;no es perdi informacio
 	push ebx
 	push ecx
 	push edx
 
-	mov eax, 0
+	mov eax, 0						;inicialitzar tots els registres usats a 0
 	mov ebx, 0
 	mov ecx, 0
 	mov edx, 0
-	mov [HitPair], 0
+	mov [HitPair], 0				;incialitzem variable a 0 (1-indica que hi ha parella)
 
-	mov [Num_Card], 0			;Reiniciar valor carta a obrir com a primera (primera = 0)
+	mov [Num_Card], 0				;inicialitzem la variable que indica el numero de carta
 
-	mov  [rowScreen], 3			;Mostrar número del jugador que toca
-	mov  [colScreen], 41
-	call gotoxy
-	mov  eax, [Player]
-	add  eax, 48
-	mov  [carac], al
-	call printch 
+	mov  [rowScreen], 3				;Mostrar número del jugador que toca
+	mov  [colScreen], 41			;(rowScreeen i colScreen) indica on volem el cursor
+	call gotoxy						;pociciona el cursor segons rowScreen i colScreen
+	mov  eax, [Player]				;movem (1/2) a eax. numero de jugador
+	add  eax, 48					;sumem el codi ascii per tenir el (1/2 en ascii)
+	mov  [carac], al				;carac es de 8 bits, i conte el nuemro del jugador en ascii	
+	call printch					;escriu per pantalla el carac
 
 actualitzarCarta:
-	mov  [rowScreen], 3			;Mostra quina carta s'ha d'obrir
-	mov  [colScreen], 30
-	call  gotoxy
-	mov  eax, [Num_Card]
-	inc  eax
-	add  eax, 48
-	mov  [carac], al
-	call printch
+	mov  [rowScreen], 3				;Mostra quina carta s'ha d'obrir
+	mov  [colScreen], 30			;(rowScreeen i colScreen) indica on volem el cursor
+	call  gotoxy					;pociciona el cursor segons rowScreen i colScreen
+	mov  eax, [Num_Card]			;movem el 0 de carta a eax
+	inc  eax						;incrementem en 1 per tenir el numero de carta
+	add  eax, 48					;sumem el codi ascii per tenir el (1/2 en ascii) 
+	mov  [carac], al				;carac es de 8 bits, i conte el numero del jugador en ascii
+	call printch					;escriu per pantalla el carac
 	
-	call posCurScreen			;Colocarse al tauler
+	call posCurScreen				;Colocarse al tauler
 
 bucle:
-	call moveCursorContinuous	;Moure per tauler fins escollir casella
+	call moveCursorContinuous		;Moure per tauler fins escollir casella
 
- 	cmp  [tecla], 's'
+ 	cmp  [tecla], 's'				;salta a fi si es clica s
 	je   fi
 
+mostrarCarta:						;comprovar carta 
+	call calcIndex					;Cridar subrutina calcIndex (accedir a les components de la matriu)
 
-	call calcIndex				;Cridar subrutina calcIndex (accedir a les components de la matriu)
-
-	mov  eax, [indexMat]		;Carreguem el valor de la variable [indexMat] al registre eax
+	mov  eax, [indexMat]			;Carreguem el valor de la variable [indexMat] al registre eax
 		
-	mov bl, [Board+eax]			;Comprovar si posició escollida ja està oberta
-	cmp ebx, 'o'
-	je bucle					;Si la posició està oberta, saltar al bucle per escollir una altra casella
+	mov bl, [Board+eax]				;Accedeix al contingut de la posicio
+	cmp ebx, 'o'					;comprovem que estigui oberta
+	je bucle						;Si la posició està oberta, saltar al bucle per escollir una altra casella
 								
-	mov [Board+eax], 'o'		;Sinó, mostrar valor per pantalla i marcar casella com a ocupada
-	mov  ebx, [gameCards+eax]	;Carreguem el valor de la variable [gameCards+eax] al registre ebx
-	add  ebx, 48				;48 = 0 per obtenir el numero al girar la carta
-	mov  [carac], bl			;Guardem el resultat obtingut de 8 bits a la variable [carac]
-	mov ecx, [rowScreen]
+	mov [Board+eax], 'o'			;Sinó, mostrar valor per pantalla i marcar casella com a ocupada
+	mov  ebx, [gameCards+eax]		;Carreguem el valor de la variable [gameCards+eax] al registre ebx
+	add  ebx, 48					;48 = 0 per obtenir el numero al girar la carta
+	mov  [carac], bl				;Guardem el resultat obtingut de 8 bits a la variable [carac]
+	mov ecx, [rowScreen]			;guardem posicio de la carta 1
 	mov edx, [colScreen]
 
-	call printch				;Cridar subrutina printch
+	call printch					;Cridar subrutina printch per mostrar carta 1 
 
-	cmp [Num_Card], 1			;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
-	je compararCartes			;Si és la segona carta, sortir del bucle
+guardarDadesCarta:
+
+	cmp [Num_Card], 1				;Comprovar si és la primera carta o la segona que s'obre (1 = segona carta)
+	je compararCartes				;Si és la segona carta, sortir del bucle
 	
-
-	inc [Num_Card]				;Incrementar valor carta a escollir
-	mov dl, [col]
-	mov [firstCol],	dl			;Guardar valor primera columna
-	mov ecx, [row]
-	mov [firstRow], ecx			;Guardar valor primera fila
-	mov [firstVal], ebx
-	jmp actualitzarCarta
+dadesCarta1:
+	inc [Num_Card]					;Incrementar valor carta a escollir
+	mov dl, [col]					;guardem la columna a la variable corresponet fisrtCol
+	mov [firstCol],	dl				;Guardar valor primera columna
+	mov ecx, [row]					;guardem la fila a la variable corresponent fistRow
+	mov [firstRow], ecx				;Guardar valor primera fila
+	mov [firstVal], ebx				;guardem el numero (en ascii) de la carta	
+	jmp actualitzarCarta			;recorem el bucle un altre cop per la segona carta
 
 
 compararCartes:
-	cmp ebx, [firstVal]			;Comparar valor 1 amb valor 2		
-	je tornarTrue						;Si són iguals, deixar imprés a la taula i sortir
+	cmp ebx, [firstVal]				;Comparar valor 1 amb valor 2		
+	je tornarTrue					;Si són iguals, deixar imprés a la taula i sortir
 
-	call getch
-	mov [Board+eax], ' '		;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
-	mov [carac], ' '
-	call posCurScreen
-	call printch				;Posar en blanc segona casella escollida
-								;Sinó són iguals, canviar estat de les caselles i reestablir posicions del tauler a buides
-	mov ecx, [firstRow]			;Carregar valors primera carta per eliminar
-	mov dl, [firstCol]
-	mov [row], ecx
+TreureCarta2:
+	mov [Board+eax], ' '			;Sinó són iguals, canviar estat de les caselles 
+	mov [carac], ' '				;reestablir posicions del tauler a buides
+	call posCurScreen				;posicionem el cursor a la carta 1
+	call printch					;Posar en blanc segona casella escollida
+
+TreureCarta1:						
+	mov ecx, [firstRow]				;Carregar valors primera carta per eliminar
+	mov dl, [firstCol]				;carreguem a registres
+	mov [row], ecx					;movem a row i col per poder fer el calcIndex
 	mov [col], dl
 
-	call calcIndex				;Calcular posició per posar a la matriu que la posició queda lliure
-	mov eax, [indexMat]
-	mov [Board+eax], ' '
+	call calcIndex					;Calcular posició per posar a la matriu
+	mov eax, [indexMat]				;posem la posicio de la matriu a eax
+	mov [Board+eax], ' '			;indiquem que no esta oberta
 
-	mov [carac], ' '			;Carregar espai buit per tapar casella
+	mov [carac], ' '				;Carregar espai buit per tapar casella
 	call posCurScreen
-	call printch				;Posar en blanc segona casella escollida
+	call printch					;Posar en blanc segona casella escollida
 	jmp fi
 
 tornarTrue:
@@ -636,7 +639,7 @@ tornarTrue:
 	
 
 fi:
-	pop edx
+	pop edx							;retornar estat previ a la funció
 	pop ecx
 	pop ebx
 	pop eax
