@@ -614,6 +614,7 @@ compararCartes:
 	je tornarTrue					;Si són iguals, deixar imprés a la taula i sortir
 
 TreureCarta2:
+	call getch						;esperar que premis una carta 
 	mov [Board+eax], ' '			;Sinó són iguals, canviar estat de les caselles 
 	mov [carac], ' '				;reestablir posicions del tauler a buides
 	call posCurScreen				;posicionem el cursor a la carta 1
