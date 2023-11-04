@@ -678,6 +678,4 @@ fi:
 
 openPairsContinuous endp
 
-
-
 END
