@@ -581,11 +581,16 @@ mostrarCarta:						;comprovar carta
 
 	mov  eax, [indexMat]			;Carreguem el valor de la variable [indexMat] al registre eax
 		
+	shr eax, 2   ;prova (dividim pq board es char)
+
 	mov bl, [Board+eax]				;Accedeix al contingut de la posicio
 	cmp ebx, 'o'					;comprovem que estigui oberta
 	je bucle						;Si la posició està oberta, saltar al bucle per escollir una altra casella
 								
 	mov [Board+eax], 'o'			;Sinó, mostrar valor per pantalla i marcar casella com a ocupada
+	
+	shl eax , 2  ;prova multipliquem pq gamecards es int
+
 	mov  ebx, [gameCards+eax]		;Carreguem el valor de la variable [gameCards+eax] al registre ebx
 	add  ebx, 48					;48 = 0 per obtenir el numero al girar la carta
 	mov  [carac], bl				;Guardem el resultat obtingut de 8 bits a la variable [carac]
@@ -615,6 +620,9 @@ compararCartes:
 
 TreureCarta2:
 	call getch						;esperar que premis una carta 
+
+	shr eax, 2 ;prova pq board es char
+
 	mov [Board+eax], ' '			;Sinó són iguals, canviar estat de les caselles 
 	mov [carac], ' '				;reestablir posicions del tauler a buides
 	call posCurScreen				;posicionem el cursor a la carta 1
@@ -628,6 +636,9 @@ TreureCarta1:
 
 	call calcIndex					;Calcular posició per posar a la matriu
 	mov eax, [indexMat]				;posem la posicio de la matriu a eax
+	
+	shr eax, 2 ;proba dividim pq es char
+	
 	mov [Board+eax], ' '			;indiquem que no esta oberta
 
 	mov [carac], ' '				;Carregar espai buit per tapar casella
