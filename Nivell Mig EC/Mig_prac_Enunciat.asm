@@ -619,7 +619,7 @@ compararCartes:
 	je tornarTrue					;Si són iguals, deixar imprés a la taula i sortir
 
 TreureCarta2:
-	call getch						;esperar que premis una carta 
+	call getch						;esperar que premis una tecla 
 
 	shr eax, 2 ;prova pq board es char
 
